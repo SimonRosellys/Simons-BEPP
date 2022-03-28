@@ -3,8 +3,11 @@ const { getTopicsCon } = require("./controllers/controllers");
 const app = express();
 
 app.use(express.json());
-
 app.get("/api/topics", getTopicsCon);
+
+app.all("/*", (req, res) => {
+  res.status(404).send({ msg: "Path not found" });
+});
 
 // app.use((err, req, res, next) => {
 //   if (err.status && err.msg) {
@@ -12,7 +15,8 @@ app.get("/api/topics", getTopicsCon);
 //   } else {
 //     next(err);
 //   }
-// });
+//
+ });
 
 app.use((err, req, res, next) => {
   res.status(500).send({ msg: "internal server error" });

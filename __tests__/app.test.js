@@ -25,4 +25,12 @@ describe("GET /api/topics", () => {
         );
       });
   });
+  test.only("an invalid endpoint returns error 404 path not found", () => {
+    return request(app)
+      .get("/api/toppics")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Path not found");
+      });
+  });
 });
