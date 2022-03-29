@@ -1,10 +1,26 @@
 const db = require("../db/connection");
-const { getTopicsMod } = require("../models/models");
+const { fetchTopicsMod, fetchArticleMod } = require("../models/models");
 
 exports.getTopicsCon = (req, res, next) => {
-  getTopicsMod().then((topics) => {
+  fetchTopicsMod().then((topics) => {
     res.status(200).send(topics);
   });
+};
 
-  //    maybe use .catch(next); ????
+exports.getArticleCon = (req, res, next) => {
+  const { article_id } = req.params;
+  fetchArticleMod(article_id)
+    .then((article) => {
+      const specificArticle = {
+        author: article.name,
+        title: article.title,
+        article_id: Number(article_id),
+        body: article.body,
+        topic: article.topic,
+        created_at: article.created_at,
+        votes: article.votes,
+      };
+      res.status(200).send(specificArticle);
+    })
+    .catch(next);
 };
