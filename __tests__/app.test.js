@@ -37,39 +37,36 @@ describe("GET /api/topics", () => {
       .get("/api/articles/4")
       .expect(200)
       .then((res) => {
-        expect(res.body).toMatchObject({
-          title: expect.any(String),
-          topic: expect.any(String),
-          author: expect.any(String),
-          body: expect.any(String),
-          created_at: expect.any(String),
-          votes: expect.any(Number),
-          article_id: expect.any(Number),
+        // console.log(res.body.article);
+        res.body.article.forEach((article) => {
+          expect(article).toMatchObject({
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_id: 4,
+          });
         });
       });
   });
-  test("an object with correct keys is returned on a specific article ID query", () => {
-    return request(app)
-      .get("/api/articles/5")
-      .expect(200)
-      .then((res) => {
-        expect(res.body).toEqual({
-          author: "paul",
-          title: "UNCOVERED: catspiracy to bring down democracy",
-          article_id: 5,
-          body: "Bastet walks amongst us, and the cats are taking arms!",
-          topic: "cats",
-          created_at: "2020-08-03T13:14:00.000Z",
-          votes: 0,
-        });
-      });
-  });
+
   test("404 article does not exist", () => {
     return request(app)
       .get("/api/articles/9999")
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("article does not exist");
+      });
+  });
+
+  test.only("400 article id is invalid", () => {
+    return request(app)
+      .get("/api/articles/invalid")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("article id is invalid");
       });
   });
 });
