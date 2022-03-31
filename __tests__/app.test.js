@@ -24,12 +24,15 @@ describe("GET /api/topics", () => {
         );
       });
   });
+});
+
+describe("GET /api/articles", () => {
   test("an invalid endpoint returns error 404 path not found", () => {
     return request(app)
       .get("/api/toppics")
       .expect(404)
       .then((res) => {
-        expect(res.body.msg).toBe("Path not found");
+        expect(res.body.msg).toBe("Not found");
       });
   });
   test("an object with correct keys is returned on a  article ID query", () => {
@@ -37,7 +40,6 @@ describe("GET /api/topics", () => {
       .get("/api/articles/4")
       .expect(200)
       .then((res) => {
-        // console.log(res.body.article);
         res.body.article.forEach((article) => {
           expect(article).toMatchObject({
             title: expect.any(String),
@@ -57,16 +59,67 @@ describe("GET /api/topics", () => {
       .get("/api/articles/9999")
       .expect(404)
       .then((res) => {
-        expect(res.body.msg).toBe("article does not exist");
+        expect(res.body.msg).toBe("Not found");
       });
   });
 
-  test.only("400 article id is invalid", () => {
+  test("400 article id is invalid", () => {
     return request(app)
       .get("/api/articles/invalid")
       .expect(400)
       .then((res) => {
-        expect(res.body.msg).toBe("article id is invalid");
+        expect(res.body.msg).toBe("bad request");
+      });
+  });
+});
+
+describe("PATCH /api/articles", () => {
+  test("200: responds with updated article", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ votes: 10 })
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual({
+          updatedArticle: [
+            {
+              article_id: 1,
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              created_at: "2020-07-09T20:11:00.000Z",
+              votes: 110,
+            },
+          ],
+        });
+      });
+  });
+  test("404: if article is invalid", () => {
+    return request(app)
+      .patch("/api/articles/9999")
+      .send({ votes: 10 })
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
+      });
+  });
+  test("400: if inc_votes is invalid", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ votes: "notANumberSoInvalid" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
+      });
+  });
+  test("404: if article id is invalid", () => {
+    return request(app)
+      .patch("/api/articles/notANumberSoInvalid")
+      .send({ votes: 5 })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
       });
   });
 });
