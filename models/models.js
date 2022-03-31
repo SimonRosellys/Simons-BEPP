@@ -29,8 +29,18 @@ exports.updateArticleMod = (article_id, votes_inc) => {
     )
     .then((article) => {
       if (article.rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "bad request" });
+        return Promise.reject({ status: 404, msg: "Invalid article ID" });
       }
-      return article.rows;
+      return article.rows[0];
     });
+};
+
+exports.fetchUsersMod = () => {
+  return db.query(`SELECT * FROM users;`).then((users) => {
+    let usernameArr = [];
+    users.rows.forEach((user) => {
+      usernameArr.push({ username: user.username });
+    });
+    return usernameArr;
+  });
 };

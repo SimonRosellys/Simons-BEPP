@@ -3,6 +3,7 @@ const {
   fetchTopicsMod,
   fetchArticleMod,
   updateArticleMod,
+  fetchUsersMod,
 } = require("../models/models");
 
 exports.getTopicsCon = (req, res, next) => {
@@ -22,11 +23,17 @@ exports.getArticleCon = (req, res, next) => {
 
 exports.patchArticleCon = (req, res, next) => {
   const { article_id } = req.params;
-  const votes_inc = req.body.votes;
+  const { votes_inc } = req.body;
 
   updateArticleMod(article_id, votes_inc)
     .then((updatedArticle) => {
       res.send({ updatedArticle });
     })
     .catch(next);
+};
+
+exports.getUsersCon = (req, res, next) => {
+  fetchUsersMod().then((users) => {
+    res.status(200).send(users);
+  });
 };

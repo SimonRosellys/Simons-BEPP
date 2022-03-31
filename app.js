@@ -3,6 +3,7 @@ const {
   getTopicsCon,
   getArticleCon,
   patchArticleCon,
+  getUsersCon,
 } = require("./controllers/controllers");
 const app = express();
 
@@ -10,6 +11,7 @@ app.use(express.json());
 app.get("/api/topics", getTopicsCon);
 app.get("/api/articles/:article_id", getArticleCon);
 app.patch("/api/articles/:article_id", patchArticleCon);
+app.get("/api/users", getUsersCon);
 
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
