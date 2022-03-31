@@ -1,10 +1,17 @@
 const db = require("../db/connection");
-const { getTopicsMod } = require("../models/models");
+const { fetchTopicsMod, fetchArticleMod } = require("../models/models");
 
 exports.getTopicsCon = (req, res, next) => {
-  getTopicsMod().then((topics) => {
+  fetchTopicsMod().then((topics) => {
     res.status(200).send(topics);
   });
+};
 
-  //    maybe use .catch(next); ????
+exports.getArticleCon = (req, res, next) => {
+  const { article_id } = req.params;
+  fetchArticleMod(article_id)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch(next);
 };
