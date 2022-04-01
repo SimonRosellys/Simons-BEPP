@@ -5,12 +5,14 @@ const {
   patchArticleCon,
   getUsersCon,
   getAllArticlesCon,
+  getCommentsCon,
 } = require("./controllers/controllers");
 const app = express();
 
 app.use(express.json());
 app.get("/api/topics", getTopicsCon);
 app.get("/api/articles/:article_id", getArticleCon);
+app.get("/api/articles/:article_id/comments", getCommentsCon);
 app.get("/api/articles", getAllArticlesCon);
 app.patch("/api/articles/:article_id", patchArticleCon);
 app.get("/api/users", getUsersCon);
