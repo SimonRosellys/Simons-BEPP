@@ -5,6 +5,7 @@ const {
   updateArticleMod,
   fetchUsersMod,
   fetchAllArticlesMod,
+  fetchCommentsMod,
 } = require("../models/models");
 
 exports.getTopicsCon = (req, res, next) => {
@@ -43,4 +44,13 @@ exports.getAllArticlesCon = (req, res, next) => {
   fetchAllArticlesMod().then((articles) => {
     res.status(200).send(articles);
   });
+};
+
+exports.getCommentsCon = (req, res, next) => {
+  const { article_id } = req.params;
+  fetchCommentsMod(article_id)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch(next);
 };
