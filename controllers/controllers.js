@@ -4,6 +4,7 @@ const {
   fetchArticleMod,
   updateArticleMod,
   fetchUsersMod,
+  fetchAllArticlesMod,
 } = require("../models/models");
 
 exports.getTopicsCon = (req, res, next) => {
@@ -35,5 +36,11 @@ exports.patchArticleCon = (req, res, next) => {
 exports.getUsersCon = (req, res, next) => {
   fetchUsersMod().then((users) => {
     res.status(200).send(users);
+  });
+};
+
+exports.getAllArticlesCon = (req, res, next) => {
+  fetchAllArticlesMod().then((articles) => {
+    res.status(200).send(articles);
   });
 };

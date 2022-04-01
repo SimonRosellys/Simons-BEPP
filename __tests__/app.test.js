@@ -52,6 +52,7 @@ describe("GET /api/articles/:article_id", () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
             article_id: 4,
+            comment_count: expect.any(String),
           });
         });
       });
@@ -88,6 +89,35 @@ describe("GET /api/articles/:article_id", () => {
             article_id: 9,
             comment_count: "2",
           });
+        });
+      });
+  });
+  test("GET /api/articles returns an array of articles with specific keys", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((res) => {
+        res.body.forEach((article) => {
+          expect(article).toMatchObject({
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_id: expect.any(Number),
+            comment_count: expect.any(String),
+          });
+        });
+      });
+  });
+  test("GET /api/articles returns an array of articles in descending order of creation date", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toBeSortedBy("created_at", {
+          descending: true,
         });
       });
   });
