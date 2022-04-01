@@ -180,7 +180,7 @@ describe("PATCH /api/articles", () => {
         expect(res.body.msg).toBe("bad request");
       });
   });
-  test("404: if article id is invalid", () => {
+  test("400: if article id is invalid", () => {
     return request(app)
       .patch("/api/articles/notANumberSoInvalid")
       .send({ votes_inc: 5 })
@@ -254,12 +254,50 @@ describe("GET /api/articles/:article_id/comments", () => {
         });
       });
   });
-  test("404 returns Not found when specific id is invalid", () => {
+  test("400 returns Not found when specific id is invalid", () => {
     return request(app)
       .get("/api/articles/9999/comments")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Not found");
+      });
+  });
+  test("404 Not found request when path is invalid", () => {
+    return request(app)
+      .get("/api/articdles/9/comments")
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("Not found");
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("200 returns posted comment", () => {
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send({ username: "usernameTest", body: "bodyTest" })
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual({ updatedComment: "bodyTest" });
+      });
+  });
+  test("400: if article id is invalid", () => {
+    return request(app)
+      .post("/api/articles/notANumberSoInvalid/comments")
+      .send({ username: "usernameTest", body: "bodyTest" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
+      });
+  });
+  test("400: if inc_votes is invalid", () => {
+    return request(app)
+      .post("/api/articles/notANumberSoInvalid/comments")
+      .send({ Incorrentusername: "usernameTest", Incorrectbody: "bodyTest" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
       });
   });
 });
