@@ -35,28 +35,27 @@ describe("GET /api/articles", () => {
         expect(res.body.msg).toBe("Not found");
       });
   });
+});
 
-  describe("GET /api/articles/:article_id", () => {
-    test("an object with correct keys is returned on a  article ID query", () => {
-      return request(app)
-        .get("/api/articles/4")
-        .expect(200)
-        .then((res) => {
-          res.body.article.forEach((article) => {
-            expect(article).toMatchObject({
-              title: expect.any(String),
-              topic: expect.any(String),
-              author: expect.any(String),
-              body: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              article_id: 4,
-            });
+describe("GET /api/articles/:article_id", () => {
+  test("an object with correct keys is returned on a  article ID query", () => {
+    return request(app)
+      .get("/api/articles/4")
+      .expect(200)
+      .then((res) => {
+        res.body.article.forEach((article) => {
+          expect(article).toMatchObject({
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_id: 4,
           });
         });
-    });
+      });
   });
-
   test("404 article does not exist", () => {
     return request(app)
       .get("/api/articles/9999")
@@ -65,13 +64,31 @@ describe("GET /api/articles", () => {
         expect(res.body.msg).toBe("Not found");
       });
   });
-
   test("400 article id is invalid", () => {
     return request(app)
       .get("/api/articles/invalid")
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("bad request");
+      });
+  });
+  test("returns comment count included in article ", () => {
+    return request(app)
+      .get("/api/articles/9")
+      .expect(200)
+      .then((res) => {
+        res.body.article.forEach((article) => {
+          expect(article).toMatchObject({
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_id: 9,
+            comment_count: "2",
+          });
+        });
       });
   });
 });
@@ -150,14 +167,25 @@ describe("GET /api/users", () => {
       .get("/api/users")
       .expect(200)
       .then((res) => {
-        expect(res.body).toEqual([
-          { username: "butter_bridge" },
-          { username: "icellusedkars" },
-          { username: "rogersop" },
-          { username: "lurker" },
-        ]);
+        expect(res.body).toEqual({
+          users: [
+            { username: "butter_bridge" },
+            { username: "icellusedkars" },
+            { username: "rogersop" },
+            { username: "lurker" },
+          ],
+        });
       });
   });
+  test("check length of array", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.users.length).toBe(4);
+      });
+  });
+
   test("404 endpoint unknown", () => {
     return request(app)
       .get("/api/uzers")
