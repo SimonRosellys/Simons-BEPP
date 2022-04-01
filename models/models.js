@@ -82,8 +82,36 @@ WHERE comments.article_id = $1;
     )
     .then((article) => {
       if (article.rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Not found" });
+        return Promise.reject({ status: 400, msg: "Not found" });
       }
       return article.rows;
     });
 };
+
+exports.addArticleCommentMod = (article_id, username, body) => {
+  return db
+    .query(
+      `
+    UPDATE articles 
+    SET body = $2
+    WHERE article_id = $1
+    RETURNING *
+    
+    ;`,
+      [article_id, body]
+    )
+    .then((article) => {
+      if (article.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Invalid article ID" });
+      }
+      return article.rows[0].body;
+    });
+};
+
+/*
+WORKING UPDATE:
+ UPDATE articles 
+    SET votes = votes + $1
+    WHERE article_id = $2
+    RETURNING *
+*/

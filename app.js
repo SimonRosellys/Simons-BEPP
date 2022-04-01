@@ -6,6 +6,7 @@ const {
   getUsersCon,
   getAllArticlesCon,
   getCommentsCon,
+  postCommentCon,
 } = require("./controllers/controllers");
 const app = express();
 
@@ -16,6 +17,7 @@ app.get("/api/articles/:article_id/comments", getCommentsCon);
 app.get("/api/articles", getAllArticlesCon);
 app.patch("/api/articles/:article_id", patchArticleCon);
 app.get("/api/users", getUsersCon);
+app.post("/api/articles/:article_id/comments", postCommentCon);
 
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
